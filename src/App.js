@@ -30,6 +30,7 @@ class App extends Component {
       .find({})
       .execute()
       .then(docs => {
+        // Store the returned data into local React state
         this.setState({ contacts: docs });
       })
   }
@@ -37,12 +38,21 @@ class App extends Component {
   submitContact(e) {
     e.preventDefault();
 
+    // Retrieve user input name and email
+    const name = ReactDOM.findDOMNode(this.refs.name).value;
+    const email = ReactDOM.findDOMNode(this.refs.email).value;
+
+    // Create the JavaScript object to push to MongoDB
+    const newContact = {
+      "name": name,
+      "email": email,
+    };
+
+    // Push newContact to the DB
     db.collection('Contacts')
-      .insertOne({
-        name: ReactDOM.findDOMNode(this.refs.name).value,
-        email: ReactDOM.findDOMNode(this.refs.email).value,
-      })
+      .insertOne(newContact)
       .then(() => {
+        // reset the inputs to empty string
         ReactDOM.findDOMNode(this.refs.name).value = "";
         ReactDOM.findDOMNode(this.refs.email).value = "";
         this.updateContacts();
